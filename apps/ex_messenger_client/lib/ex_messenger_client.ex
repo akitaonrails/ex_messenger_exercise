@@ -19,10 +19,10 @@ defmodule ExMessengerClient do
     nick = System.get_env("nick")
       |> String.rstrip
 
-    [server, nick]
+    {server, nick}
   end
 
-  defp connect([server, nick]) do
+  defp connect({server, nick}) do
     IO.puts "Connecting to #{server} from #{Node.self} ..."
     Node.set_cookie(Node.self, :"chocolate-chip")
     case Node.connect(server) do
@@ -31,17 +31,17 @@ defmodule ExMessengerClient do
         IO.puts "Could not connect to server, reason: #{reason}"
         System.halt(0)
     end
-    [server, nick]
+    {server, nick}
   end
 
-  defp start_message_handler([server, nick]) do
+  defp start_message_handler({server, nick}) do
     ExMessengerClient.MessageHandler.start_link(server)
     IO.puts "Connected"
-    [server, nick]
+    {server, nick}
   end
 
-  defp join_chatroom([server, nick]) do
-    case ServerProcotol.connect([server, nick]) do
+  defp join_chatroom({server, nick}) do
+    case ServerProcotol.connect({server, nick}) do
       {:ok, users} ->
         IO.puts "* Joined the chatroom *"
         IO.puts "* Users in the room: #{users} *"
@@ -50,6 +50,6 @@ defmodule ExMessengerClient do
         IO.puts "Could not join chatroom, reason: #{reason}"
         System.halt(0)
     end
-    [server, nick]
+    {server, nick}
   end
 end

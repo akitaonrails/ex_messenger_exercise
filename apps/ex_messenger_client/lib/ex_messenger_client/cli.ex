@@ -1,12 +1,12 @@
 defmodule ExMessengerClient.CLI do
   alias ExMessengerClient.ServerProcotol
 
-  def input_loop([server, nick]) do
+  def input_loop({server, nick}) do
     IO.write "#{Node.self}> "
     line = IO.read(:line)
       |> String.rstrip
-    handle_command(line, [server, nick])
-    input_loop([server, nick])
+    handle_command line, {server, nick}
+    input_loop {server, nick}
   end
 
   def handle_command("/help", _args) do
