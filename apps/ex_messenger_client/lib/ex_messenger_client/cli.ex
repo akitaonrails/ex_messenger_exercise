@@ -4,11 +4,12 @@ defmodule ExMessengerClient.CLI do
   def input_loop([server, nick]) do
     IO.write "#{Node.self}> "
     line = IO.read(:line)
-    handle_command(String.rstrip(line), [server, nick])
+      |> String.rstrip
+    handle_command(line, [server, nick])
     input_loop([server, nick])
   end
 
-  def handle_command("/help", args) do
+  def handle_command("/help", _args) do
     IO.puts """
     Available commands:
       /leave
@@ -38,11 +39,11 @@ defmodule ExMessengerClient.CLI do
     ServerProcotol.list_users(args)
   end
 
-  def handle_command("", args), do: :ok
+  def handle_command("", _args), do: :ok
 
-  def handle_command(nil, args), do: :ok
+  def handle_command(nil, _args), do: :ok
 
-  def handle_command(message, [server, nick] = args) do
+  def handle_command(message, args) do
     if String.contains?(message, "/pm") do
       {to, message} = parse_private_recipient(message)
       ServerProcotol.private_message(args, to, message)
